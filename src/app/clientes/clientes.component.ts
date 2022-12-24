@@ -49,7 +49,7 @@ export class ClientesComponent{
   displayedColumns: string[] = ['position','cedula','nombres', 'apellidos','direccion','edad', 'modificar'];
   dataToDisplay = [...data];
   
-  dataSource = new DataSourceFound(this.dataToDisplay);
+  dataSource = new MatTableDataSource<ClienteInterface>;
 
   nuevoCliente:any;
   nav: any;
@@ -61,6 +61,8 @@ export class ClientesComponent{
     
     let counte = this.dataToDisplay.length
     this.cookies.set("total", counte.toString())
+
+    this.dataSource = new MatTableDataSource(this.dataToDisplay);
 
     if (this.nuevoCliente != null){      
       console.log(this.nuevoCliente.datosCliente.queryParams)
@@ -78,36 +80,42 @@ export class ClientesComponent{
   addData() {
     let newData = this.nuevoCliente.datosCliente.queryParams.info;
     this.dataToDisplay = [...this.dataToDisplay,newData];
-    this.dataSource.setData(this.dataToDisplay)
+    //this.dataSource.setData(this.dataToDisplay)
+    this.dataSource.data = this.dataToDisplay;
   }
 
   editData(){
-    let newData = this.nuevoCliente.datosCliente.queryParams;
+    let newData = this.nuevoCliente.datosCliente.queryParams.info;
     this.dataToDisplay = [...this.dataToDisplay];
-    console.log(this.nposition)
+    this.nposition = this.cookies.get("nposition")
+    console.log(this.dataToDisplay)
     this.dataToDisplay.map((element) => {
-      if(this.nposition === element.position){
+      console.log("Position:"+this.nposition,"Element:"+element.position)
+      if(this.nposition == element.position){
+        console.log("Antes:",element)
         console.log('Entre')
         element.cedula = newData.cedula;     
         element.nombres = newData.nombres;
         element.apellidos = newData.apellidos;
         element.direccion = newData.direccion;
         element.edad = newData.edad;
+        console.log("Despues:",element)
       }
+      console.log("no entro")
     })
-    console.log(this.dataToDisplay)
-    this.dataSource.setData(this.dataToDisplay)
+    
+    //this.dataToDisplay = this.dataToDisplay.filter((item) => item.position !== this.nposition);
+    this.dataSource.data = this.dataToDisplay;
   }
 
   removeData() {
     this.dataToDisplay = this.dataToDisplay.slice(0, -1);
-    this.dataSource.setData(this.dataToDisplay);
+    this.dataSource.data = this.dataToDisplay;
   }
 
   openDialogEditRow(element:any){
-    console.log(element)
-    console.log(element.position)
     this.nposition = element.position;
+    this.cookies.set("nposition", this.nposition)
     this.dialog.open(ModificarComponent, {
       width: '50%',
     })

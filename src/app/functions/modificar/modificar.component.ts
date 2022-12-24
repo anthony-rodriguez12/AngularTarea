@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NavigationExtras, Router } from '@angular/router';
-
+import { CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'app-modificar',
   templateUrl: './modificar.component.html',
@@ -10,7 +10,7 @@ import { NavigationExtras, Router } from '@angular/router';
 })
 export class ModificarComponent {
 
-  constructor(private router: Router, private dialogRef: MatDialogRef<ModificarComponent>) { }
+  constructor(private router: Router, private dialogRef: MatDialogRef<ModificarComponent>,private cookies:CookieService) { }
 
   ngOnInit(): void {
   }
@@ -29,6 +29,7 @@ export class ModificarComponent {
       queryParams: {
         types: 'Modificar',
         info: {
+          position: this.cookies.get("nposition"),
           cedula: this.usuarioNuevo.value.cedula,
           nombres: this.usuarioNuevo.value.nombres,
           apellidos: this.usuarioNuevo.value.apellidos,
